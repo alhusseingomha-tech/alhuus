@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+{% block title %}مشاريعي - alhusseingomha{% endblock %}
+{% block content %}
+<h2 class="mb-4">
+    {% if lang == 'ar' %}
+        مشاريعي
+    {% else %}
+        My Projects
+    {% endif %}
+</h2>
+<div class="row">
+    {% for project in projects %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow">
+            {% if project.image %}
+            <img src="{{ url_for('static', filename='images/' ~ project.image) }}" class="card-img-top" alt="...">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ project.title_ar if lang == 'ar' else project.title_en }}
+                </h5>
+                <p class="card-text">
+                    {{ project.description_ar if lang == 'ar' else project.description_en }}
+                </p>
+                <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-outline-primary">
+                    {% if lang == 'ar' %}
+                        عرض التفاصيل
+                    {% else %}
+                        View Details
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+

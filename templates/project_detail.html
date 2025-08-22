@@ -1,0 +1,218 @@
+{% extends "index.html" %}
+{% block title %}{{ project.title_ar if lang == 'ar' else project.title_en }} - alhusseingomha{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="project-hero position-relative" style="height: 60vh; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ url_for('static', filename='images/' ~ project.image) }}') center/cover no-repeat;">
+        <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
+            <h1 class="display-4 fw-bold mb-3">{{ project.title_ar if lang == 'ar' else project.title_en }}</h1>
+            <p class="lead">{{ project.description_ar if lang == 'ar' else project.description_en }}</p>
+            <div class="mt-4">
+                {% if project.link %}
+                <a href="{{ project.link }}" class="btn btn-primary btn-lg me-3" target="_blank">
+                    <i class="fas fa-external-link-alt me-2"></i>
+                    {% if lang == 'ar' %}زيارة المشروع{% else %}Visit Project{% endif %}
+                </a>
+                {% endif %}
+                <a href="{{ url_for('projects') }}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    {% if lang == 'ar' %}العودة للمشاريع{% else %}Back to Projects{% endif %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="bg-light py-3">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">{% if lang == 'ar' %}الرئيسية{% else %}Home{% endif %}</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('projects') }}">{% if lang == 'ar' %}المشاريع{% else %}Projects{% endif %}</a></li>
+                <li class="breadcrumb-item active">{{ project.title_ar if lang == 'ar' else project.title_en }}</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Project Details -->
+    <div class="container py-5">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Project Overview -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title h4 mb-4">
+                            {% if lang == 'ar' %}نظرة عامة على المشروع{% else %}Project Overview{% endif %}
+                        </h2>
+                        <div class="project-description">
+                            {% if lang == 'ar' %}
+                                {{ project.detailed_description_ar|safe if project.detailed_description_ar else project.description_ar }}
+                            {% else %}
+                                {{ project.detailed_description_en|safe if project.detailed_description_en else project.description_en }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technologies Used -->
+                {% if project.technologies %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title h5 mb-3">
+                            {% if lang == 'ar' %}التقنيات المستخدمة{% else %}Technologies Used{% endif %}
+                        </h3>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tech in project.technologies.split(',') %}
+                            <span class="badge bg-primary fs-6">{{ tech.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Image Gallery -->
+                {% set project_images = project_images or [] %}
+                {% if project.image or project_images %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h3 class="card-title h5 mb-3">
+                            {% if lang == 'ar' %}معرض الصور{% else %}Image Gallery{% endif %}
+                        </h3>
+                        <div class="row g-3">
+                            {% if project.image %}
+                            <div class="col-md-4">
+                                <div class="project-image-container">
+                                    <img src="{{ url_for('static', filename='images/' ~ project.image) }}" 
+                                         class="img-fluid rounded cursor-pointer" 
+                                         alt="{{ project.title_ar if lang == 'ar' else project.title_en }}"
+                                         onclick="openLightbox('{{ url_for('static', filename='images/' ~ project.image) }}')">
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% for img in project_images %}
+                            <div class="col-md-4">
+                                <div class="project-image-container">
+                                    <img src="{{ url_for('static', filename='images/' ~ img.image_path) }}" 
+                                         class="img-fluid rounded cursor-pointer" 
+                                         alt="{{ project.title_ar if lang == 'ar' else project.title_en }}"
+                                         onclick="openLightbox('{{ url_for('static', filename='images/' ~ img.image_path) }}')">
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Project Info Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title h5 mb-3">
+                            {% if lang == 'ar' %}معلومات المشروع{% else %}Project Info{% endif %}
+                        </h4>
+                        <ul class="list-unstyled">
+                            {% if project.created_at %}
+                            <li class="mb-2">
+                                <strong>{% if lang == 'ar' %}تاريخ الإنشاء:{% else %}Created:{% endif %}</strong>
+                                {{ project.created_at.strftime('%Y-%m-%d') }}
+                            </li>
+                            {% endif %}
+                            {% if project.link %}
+                            <li class="mb-2">
+                                <strong>{% if lang == 'ar' %}الرابط:{% else %}Link:{% endif %}</strong>
+                                <a href="{{ project.link }}" target="_blank" class="text-decoration-none">
+                                    {{ project.link|truncate(30) }}
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title h6 mb-3">
+                            {% if lang == 'ar' %}التنقل{% else %}Navigation{% endif %}
+                        </h5>
+                        <div class="d-flex justify-content-between">
+                            {% if prev_project %}
+                            <a href="{{ url_for('project_detail', project_id=prev_project.id) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-chevron-left"></i>
+                                {% if lang == 'ar' %}السابق{% else %}Previous{% endif %}
+                            </a>
+                            {% else %}
+                            <div></div>
+                            {% endif %}
+                            
+                            {% if next_project %}
+                            <a href="{{ url_for('project_detail', project_id=next_project.id) }}" 
+                               class="btn btn-outline-primary btn-sm">
+                                {% if lang == 'ar' %}التالي{% else %}Next{% endif %}
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                            {% else %}
+                            <div></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox Modal -->
+<div class="modal fade" id="lightboxModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ project.title_ar if lang == 'ar' else project.title_en }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="lightboxImage" class="img-fluid" src="" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.project-hero {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.project-description {
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+.project-image-container {
+    overflow: hidden;
+    border-radius: 0.375rem;
+}
+.project-image-container img {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+.project-image-container img:hover {
+    transform: scale(1.05);
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+</style>
+
+<script>
+function openLightbox(imageSrc) {
+    document.getElementById('lightboxImage').src = imageSrc;
+    new bootstrap.Modal(document.getElementById('lightboxModal')).show();
+}
+</script>
+{% endblock %}

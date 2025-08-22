@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block title %}إدارة الروابط{% endblock %}
+{% block content %}
+<h2>إدارة روابط التواصل الاجتماعي</h2>
+<form method="post">
+    <input type="text" name="name" placeholder="اسم الشبكة" required>
+    <input type="text" name="url" placeholder="رابط الشبكة" required>
+    <input type="text" name="icon" placeholder="أيقونة FontAwesome (مثال: fab fa-facebook)" required>
+    <button type="submit">إضافة</button>
+</form>
+<table class="table mt-4">
+    <tr>
+        <th>الاسم</th>
+        <th>الرابط</th>
+        <th>الأيقونة</th>
+    </tr>
+    {% for link in links %}
+    <tr>
+        <td>{{ link.name }}</td>
+        <td><a href="{{ link.url }}" target="_blank">{{ link.url }}</a></td>
+        <td><i class="{{ link.icon }}"></i></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

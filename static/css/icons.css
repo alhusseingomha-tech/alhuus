@@ -1,0 +1,94 @@
+/* Language Switcher Icons */
+.language-icon {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin: 0 4px;
+}
+
+.language-icon.ar {
+    background: linear-gradient(135deg, #1e7e34, #28a745);
+    color: white;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.language-icon.en {
+    background: linear-gradient(135deg, #0062cc, #007bff);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.language-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Site Logo Icon */
+.site-logo {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.site-logo:hover {
+    transform: scale(1.05);
+}
+
+.site-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.site-logo-icon::before {
+    content: "AG";
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Dark mode adjustments */
+body.dark .site-logo {
+    color: #f1f1f1;
+}
+
+body.dark .site-logo-icon {
+    background: linear-gradient(135deg, #ff6b6b, #ffa500);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .language-icon {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
+    .site-logo {
+        font-size: 1.3rem;
+    }
+    
+    .site-logo-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .site-logo-icon::before {
+        font-size: 14px;
+    }
+}

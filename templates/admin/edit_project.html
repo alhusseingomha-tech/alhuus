@@ -1,0 +1,171 @@
+<title>{% block title %}alhusseingomha - إدارة المشاريع{% endblock %}</title>
+{% extends "index.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4 text-center">{{ 'تعديل' if project else 'إضافة' }} مشروع</h2>
+            
+            <form id="projectForm" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <!-- معلومات أساسية -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">المعلومات الأساسية</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="title_ar" class="form-label">العنوان</label>
+                                <input type="text" class="form-control" id="title_ar" name="title_ar" 
+                                       value="{{ project.title_ar if project else '' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="description_ar" class="form-label">الوصف المختصر</label>
+                                <textarea class="form-control" id="description_ar" name="description_ar" 
+                                          rows="3" required>{{ project.description_ar if project else '' }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="technologies" class="form-label">التقنيات المستخدمة</label>
+                                <input type="text" class="form-control" id="technologies" name="technologies" 
+                                       value="{{ project.technologies if project else '' }}" 
+                                       placeholder="React, Python, Flask, ...">
+                                <small class="text-muted">افصل بين التقنيات بفواصل</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="link" class="form-label">رابط المشروع</label>
+                                <input type="url" class="form-control" id="link" name="link" 
+                                       value="{{ project.link if project else '' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الوصف التفصيلي -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">الوصف التفصيلي</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="detailed_description_ar" class="form-label">الوصف التفصيلي</label>
+                                <textarea class="form-control" id="detailed_description_ar" name="detailed_description_ar" 
+                                          rows="5">{{ project.detailed_description_ar if project else '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الصور -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">الصور</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- الصورة الرئيسية -->
+                        <div class="mb-4">
+                            <label for="main_image" class="form-label">الصورة الرئيسية</label>
+                            <input type="file" class="form-control" id="main_image" name="image" accept="image/*">
+                            {% if project and project.image %}
+                                <div class="mt-2">
+                                    <img src="{{ url_for('static', filename='images/' ~ project.image) }}" 
+                                         class="img-thumbnail" style="max-width: 200px;">
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- الصور الإضافية -->
+                        <div class="mb-3">
+                            <label for="additional_images" class="form-label">الصور الإضافية</label>
+                            <input type="file" class="form-control" id="additional_images" 
+                                   name="additional_images[]" multiple accept="image/*">
+                            <small class="text-muted">يمكنك اختيار عدة صور في المرة الواحدة</small>
+                        </div>
+
+                        <!-- معرض الصور الحالية -->
+                        {% if project %}
+                        <div id="currentImages" class="row">
+                            {% for image in project_images %}
+                                <div class="col-md-3 mb-3">
+                                    <div class="card">
+                                        <img src="{{ url_for('static', filename='images/' ~ image.image_path) }}" 
+                                             class="card-img-top" alt="Project Image">
+                                        <div class="card-body p-2">
+                                            <button type="button" class="btn btn-sm btn-danger btn-delete-image" 
+                                                    data-image-id="{{ image.id }}">
+                                                حذف
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- معاينة الصور الجديدة -->
+                        <div id="imagePreview" class="row mt-3" style="display: none;">
+                            <h6>معاينة الصور الجديدة:</h6>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- شريط التحميل -->
+                <div id="progressContainer" class="mb-4" style="display: none;">
+                    <div class="progress">
+                        <div id="progressBar" class="progress-bar" role="progressbar" 
+                             style="width: 0%">0%</div>
+                    </div>
+                    <div id="progressText" class="text-center mt-2">جاري رفع الصور...</div>
+                </div>
+
+                <!-- الأزرار -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                        {{ 'تحديث المشروع' if project else 'إضافة المشروع' }}
+                    </button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-lg">إلغاء</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- CSS إضافي -->
+<style>
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .img-thumbnail {
+        max-height: 200px;
+        object-fit: cover;
+    }
+    
+    #imagePreview img {
+        max-height: 150px;
+        object-fit: cover;
+    }
+    
+    .btn-delete-image {
+        width: 100%;
+    }
+</style>
+
+<!-- JavaScript -->
+<script src="{{ url_for('static', filename='js/project-form.js') }}"></script>
+{% endblock %}

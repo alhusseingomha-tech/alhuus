@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+{% block title %}تعديل نبذة عني{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">تعديل نبذة عني</h2>
+    <form method="post">
+        <div class="mb-3">
+            <label>نبذة عني (عربي):</label>
+            <textarea name="text_ar" class="form-control" rows="4" required>{{ about.text_ar if about else '' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">حفظ</button>
+    </form>
+</div>
+{% endblock %}
